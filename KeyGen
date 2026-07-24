@@ -1,0 +1,60 @@
+def KeyGen(v, o, m, q):
+    n = v + o
+
+    names = [f"x{i}" for i in range(1, n + 1)]
+    R = PolynomialRing(GF(q), names)
+    x = vector(R, R.gens())
+    F = []
+    f = []
+
+    for i in range(m):
+        F1 = random_matrix(GF(q), v, v)  
+        F2 = random_matrix(GF(q), v, o)
+
+        Z1 = matrix(GF(q), o, v)
+        Z2 = matrix(GF(q), o, o)
+
+        F_i = block_matrix([
+            [F1, F2],
+            [Z1, Z2]
+        ])
+        F.append(F_i)
+        
+        f_poly = (x.row() * F_i * x.column())[0, 0]
+        f.append(f_poly)
+        
+    I_v = identity_matrix(GF(q), v)
+    I_o = identity_matrix(GF(q), o)
+
+    B = random_matrix(GF(q), v, o)
+
+    Zero = matrix(GF(q), o, v)
+
+    S = block_matrix([
+        [I_v, B],
+        [Zero, I_o]
+    ])
+    
+    P = []
+    p = []
+
+    for i in range(m):
+        P_i = S.transpose() * F[i] * S
+        P.append(P_i)
+        p_poly = (x.row() * P_i * x.column())[0, 0]
+        p.append(p_poly)
+        
+    print("Секретная матрица отображения:")
+    print(S)
+
+    print("\nСекретный ключ:")
+    for i in range(m):
+        print(f"f{i+1}(x) =", f[i])
+
+    print("\nПубличный ключ:")
+    for i in range(m):
+        print(f"p{i+1}(x) =", p[i])
+
+    return S, f, p, F, P 
+
+S, f, p, F, P = KeyGen(3, 4, 4, 7)
