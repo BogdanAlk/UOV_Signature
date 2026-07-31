@@ -1,3 +1,4 @@
+load("UOV.sage")
 def DirectAttack(d, p, v, o, m, q):
     start_time = time.perf_counter()
     n = v + o
