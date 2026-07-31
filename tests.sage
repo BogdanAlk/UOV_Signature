@@ -1,4 +1,4 @@
-load("uov.sage")
+load("UOV.sage")
 
 v = 4
 o = 3
