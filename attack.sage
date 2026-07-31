@@ -37,3 +37,35 @@ def DirectAttack(d, p, v, o, m, q):
             execution_time = end_time - start_time
             print(f"Время выполнения: {execution_time:.4f} секунд")
             return vector(Field, [sol[R.gen(i)] for i in range(n)])
+msg = "pls dont eat me"
+v = [3, 7, 8, 7]
+o = [2, 4, 5, 6]
+m = [2, 5, 5, 5]
+q = [3, 11, 13, 7]
+
+for i in range(len(v)):
+    n = v[i] + o[i]
+    complexity = q[i] ** (n - m[i])
+
+    print("=" * 70)
+    print(f"ТЕСТ {i+1}: v={v[i]}, o={o[i]}, m={m[i]}, q={q[i]}")
+    print(f"n = {n}, n - m = {n - m[i]}, сложность = {q[i]}^{n - m[i]} = {complexity}")
+    print("=" * 70)
+
+    S, f, p, P = KeyGen(v[i], o[i], m[i], q[i])
+
+    x = Sign(f, S, v[i], o[i], m[i], msg)
+    if x is not None:
+        ver = Verify(msg, x, P)
+        print(f"Подпись: {x}")
+        print(f"Подлинность: {ver}")
+    print()
+
+    x_att = DirectAttack(msg, p, v[i], o[i], m[i], q[i])
+    if x_att is not None:
+        ver_att = Verify(msg, x_att, P)
+        print(f"Подставная подпись: {x_att}")
+        print(f"Подлинность: {ver_att}")
+    else:
+        print("Атака не удалась")
+    print("\n\n\n")
